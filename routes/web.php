@@ -7,34 +7,35 @@ use App\Http\Controllers\UKMController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Rute untuk halaman utama
+// Rute Halaman Utama (Public)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Rute dashboard (hanya untuk pengguna yang sudah login dan terverifikasi)
+// Rute Dashboard (Khusus Pengguna yang Login)
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified', 'isUser'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
-// Rute untuk profile pengguna (bawaan Breeze)
-Route::middleware(['auth', 'isUser'])->group(function () {
+// Rute Profil Pengguna (Hanya untuk Pengguna Login)
+Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Rute untuk fitur CRUD
-Route::middleware(['auth', 'isUKM'])->group(function () {
-    // Rute untuk Events (hanya untuk UKM)
+// Rute untuk UKM (Hanya untuk User dengan Role UKM)
+Route::middleware(['auth', 'isUKM'])->prefix('ukm')->name('ukm.')->group(function () {
     Route::resource('events', EventController::class);
 });
 
-Route::middleware(['auth', 'isAdmin'])->group(function () {
-    // Rute untuk UKMs (hanya untuk Admin)
+// Rute untuk Admin (Hanya untuk User dengan Role Admin)
+Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('ukms', UKMController::class);
-
-    // Rute untuk Users (hanya untuk Admin)
     Route::resource('users', UserController::class);
 });
 
+// Rute Halaman Lainnya (Public)
+Route::view('/about', 'about')->name('about');
+Route::view('/contact', 'contact')->name('contact');
+
 // Tambahkan rute otentikasi bawaan Breeze
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

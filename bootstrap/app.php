@@ -7,6 +7,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUKM;
 use App\Http\Middleware\IsUser;
 
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -27,6 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'isUKM' => IsUKM::class,
             'isUser' => IsUser::class,
         ]);
+        // $middleware->redirectGuestTo('/login');
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
