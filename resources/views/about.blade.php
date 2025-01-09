@@ -16,11 +16,14 @@
     <div class="container">
         <h2 class="text-center mb-4">About Us</h2>
         <p class="text-muted text-justify">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            UKMSpace is a vibrant online platform dedicated to connecting students with campus events and organizations. We serve as a hub where campus organizations can promote their events, fostering innovation, collaboration, and community engagement.
         </p>
         <p class="text-muted text-justify mt-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        Whether you're looking for seminars, competitions, cultural festivals, or workshops, UKMSpace makes it easy to discover and participate in exciting opportunities. Our mission is to empower students to make the most of their college experience by bridging the gap between organizations and their audiences.
         </p>
+        <p class="text-muted text-justify mt-4">
+        Join us in building a thriving community where ideas flourish, talents are celebrated, and every student finds their place to shine. Let UKMSpace be your partner in making meaningful connections and unforgettable memories.
+    </p>
     </div>
 </section>
 
@@ -31,25 +34,25 @@
             <div class="col-md-3">
                 <div class="stat-item">
                     <h3 class="display-5 fw-bold">10,000+</h3>
-                    <p class="text-muted">Wedding Vendors</p>
+                    <p class="text-muted">Registered UKM</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-item">
                     <h3 class="display-5 fw-bold">20,000+</h3>
-                    <p class="text-muted">Annual Weddings</p>
+                    <p class="text-muted">Events</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-item">
                     <h3 class="display-5 fw-bold">1,000+</h3>
-                    <p class="text-muted">Wedding Venues</p>
+                    <p class="text-muted">Location</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-item">
                     <h3 class="display-5 fw-bold">1.5M</h3>
-                    <p class="text-muted">Monthly Followers</p>
+                    <p class="text-muted">Satisfied Customer</p>
                 </div>
             </div>
         </div>

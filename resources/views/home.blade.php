@@ -3,6 +3,15 @@
 @section('title', 'Home - UKMSpace')
 
 @section('content')
+
+<style>
+    .card-img-top {
+        object-fit: cover;
+        width: 100%;
+        height: 200px;
+    }
+</style>
+
     <!-- Flash Message -->
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -45,33 +54,34 @@
             <div class="row row-cols-lg-4 row-cols-md-3 row-cols-2 g-4">
                 <div class="col">
                     <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/220" class="card-img-top" alt="Event">
+                        <img src="https://jakarta.telkomuniversity.ac.id/wp-content/uploads/2024/03/Event-Studium-Generale-Sisfo-410x260.webp" class="card-img-top" alt="Event">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Concert</h5>
+                            <h5 class="card-title">Seminar Usability Testing Sistem Informasi</h5>
+                            <p class="card-"></p>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/220" class="card-img-top" alt="Event">
+                        <img src="https://i.ytimg.com/vi/Lbfr15cQgK8/maxresdefault.jpg" class="card-img-top" alt="Event">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Competition</h5>
+                            <h5 class="card-title">Sidang Senat Telkom University</h5>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/220" class="card-img-top" alt="Event">
+                        <img src="https://i.ytimg.com/vi/1irhGoWpt4A/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLA7jYiDUu88zhICX6WJnMM7DVYqzA" class="card-img-top" alt="Event">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Exhibition and Student-Fair</h5>
+                            <h5 class="card-title">Literacy Event</h5>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/220" class="card-img-top" alt="Event">
+                        <img src="https://jakarta.telkomuniversity.ac.id/wp-content/uploads/2024/11/LAFEST-2024-wbep-410x260.webp" class="card-img-top" alt="Event">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Celebrant</h5>
+                            <h5 class="card-title">Lafest</h5>
                         </div>
                     </div>
                 </div>
@@ -89,37 +99,37 @@
             <div class="row g-4">
                 <div class="col-md-3">
                     <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/336" class="card-img-top" alt="UKM">
+                        <img src="https://b856188.smushcdn.com/856188/wp-content/uploads/2022/03/catur-410x260.png?lossy=2&strip=0&webp=1" class="card-img-top" alt="UKM">
                         <div class="card-body">
                             <p class="explore-link text-end">Explore</p>
-                            <h5 class="card-title">Lorem Isum Resort<br><span class="fw-semibold">Maldives</span></h5>
+                            <h5 class="card-title">UKM Catur<br><span class="fw-semibold">Maldives</span></h5>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/336" class="card-img-top" alt="UKM">
+                        <img src="https://b856188.smushcdn.com/856188/wp-content/uploads/2022/03/capoeira-410x260.jpg?lossy=2&strip=0&webp=1" class="card-img-top" alt="UKM">
                         <div class="card-body">
                             <p class="explore-link text-end">Explore</p>
-                            <h5 class="card-title">Lorem Isum Resort<br><span class="fw-semibold">India</span></h5>
+                            <h5 class="card-title">UKM Capoeira Brasil<br><span class="fw-semibold">India</span></h5>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/336" class="card-img-top" alt="UKM">
+                        <img src="https://b856188.smushcdn.com/856188/wp-content/uploads/2022/03/badminton-410x260.jpg?lossy=2&strip=0&webp=1" class="card-img-top" alt="UKM">
                         <div class="card-body">
                             <p class="explore-link text-end">Explore</p>
-                            <h5 class="card-title">Lorem Isum Resort<br><span class="fw-semibold">Abu Dhabi</span></h5>
+                            <h5 class="card-title">UKM Badminton<br><span class="fw-semibold">Abu Dhabi</span></h5>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/336" class="card-img-top" alt="UKM">
+                        <img src="https://b856188.smushcdn.com/856188/wp-content/uploads/2022/03/voli-410x260.webp?lossy=2&strip=0&webp=1" class="card-img-top" alt="UKM">
                         <div class="card-body">
                             <p class="explore-link text-end">Explore</p>
-                            <h5 class="card-title">Lorem Isum Resort<br><span class="fw-semibold">Dubai</span></h5>
+                            <h5 class="card-title">UKM Voli<br><span class="fw-semibold">Dubai</span></h5>
                         </div>
                     </div>
                 </div>

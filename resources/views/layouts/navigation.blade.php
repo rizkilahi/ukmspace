@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white py-4">
     <div class="container">
-        <a class="navbar-brand fw-semibold fs-4" href="#">Company Name</a>
+        <a class="navbar-brand fw-semibold fs-4" href="#">UKM Space</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -16,7 +16,8 @@
                 @auth
                     <!-- Menu Dropdown Profil -->
                     <div class="dropdown">
-                        <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth::user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
