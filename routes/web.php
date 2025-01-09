@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
 // Rute untuk UKM (Hanya untuk User dengan Role UKM)
 Route::middleware(['auth', 'isUKM'])->prefix('ukm')->name('ukm.')->group(function () {
     Route::resource('events', EventController::class);
+    Route::resource('ukms', UKMController::class);
 });
 
 // Rute untuk Admin (Hanya untuk User dengan Role Admin)

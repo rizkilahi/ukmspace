@@ -6,7 +6,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container text-center">
-            <h1 class="display-4 fw-medium mb-5">Your Wedding, Your Way</h1>
+            <h1 class="display-4 fw-medium mb-5">Where Passion Meets Opportunity</h1>
             <form class="search-form">
                 <div class="row g-3">
                     <div class="col-md-4">
