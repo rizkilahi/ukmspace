@@ -8,12 +8,12 @@
             <div class="col-md-2">
                 <h6 class="fw-semibold mb-4">Venues</h6>
                 <ul class="list-unstyled">
-                    <li>Abu Dhabi</li>
-                    <li>Al Ain</li>
-                    <li>Ajman</li>
-                    <li>Dubai</li>
-                    <li>Fujairah</li>
-                    <li>Ras Al Khaimah</li>
+                    <li>Gedung Serbaguna</li>
+                    <li>TUCH</li>
+                    <li>Auditorium Damar</li>
+                    <li>TULT</li>
+                    <li>Aula FIT</li>
+                    <li>Aula Manterawu</li>
                 </ul>
             </div>
             <div class="col-md-2">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <p>Made with love by <a href="#" class="text-dark text-decoration-underline">thecreation.design</a></p>
+            <p>Made with love by <a href="#" class="text-dark text-decoration-underline">Kelompok 2</a></p>
         </div>
     </div>
 </footer>
