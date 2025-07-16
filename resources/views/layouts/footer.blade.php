@@ -6,18 +6,18 @@
                 <h6 class="fw-semibold">Social Media</h6>
             </div>
             <div class="col-md-2">
-                <h6 class="fw-semibold mb-4">Venues</h6>
+                <h6 class="fw-semibold mb-4">UKM</h6>
                 <ul class="list-unstyled">
-                    <li>Gedung Serbaguna</li>
-                    <li>TUCH</li>
-                    <li>Auditorium Damar</li>
-                    <li>TULT</li>
-                    <li>Aula FIT</li>
-                    <li>Aula Manterawu</li>
+                    <li>Abu Dhabi</li>
+                    <li>Al Ain</li>
+                    <li>Ajman</li>
+                    <li>Dubai</li>
+                    <li>Fujairah</li>
+                    <li>Ras Al Khaimah</li>
                 </ul>
             </div>
             <div class="col-md-2">
-                <h6 class="fw-semibold mb-4">Suppliers</h6>
+                <h6 class="fw-semibold mb-4">Event</h6>
                 <ul class="list-unstyled">
                     <li>Photographers</li>
                     <li>Decorators</li>
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <p>Made with love by <a href="#" class="text-dark text-decoration-underline">Kelompok 2</a></p>
+            <p>www.ukmspace.ac.id<a href="#" class="text-dark text-decoration-underline"></a></p>
         </div>
     </div>
 </footer>

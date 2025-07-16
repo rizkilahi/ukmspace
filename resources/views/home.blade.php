@@ -14,17 +14,21 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container text-center">
-            <h1 class="display-4 fw-medium mb-5">UKM Space: Your Gateway to Innovation and Collaboration</h1>
+            <h1 class="display-4 fw-medium mb-5">UKM Space</h1>
             <form class="search-form">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <select name="category" class="form-select search-input">
-                            <option value="">Select UKM</option>
+                            @foreach($ukms as $u)
+                            <option value="">{{$u["name"]}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="col-md-4">
                         <select name="event" class="form-select search-input">
-                            <option value="">Select Event</option>
+                            @foreach($events as $e)
+                            <option value="">{{$e["title"]}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="col-md-4">

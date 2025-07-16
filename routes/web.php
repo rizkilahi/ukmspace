@@ -34,18 +34,8 @@ Route::middleware(['auth', 'isUser'])->group(function () {
 });
 
 // Rute untuk UKM (Hanya untuk User dengan Role UKM)
-Route::middleware(['auth', 'isUKM'])->group(function () {
-    Route::get('/ukm/events', [EventController::class, 'index'])->name('ukm.events.index');
-    Route::get('/ukm/events/manage', [EventController::class, 'manage'])->name('ukm.events.manage');
-    Route::get('/ukm/events/create', [EventController::class, 'create'])->name('ukm.events.create');
-    Route::post('/ukm/events', [EventController::class, 'store'])->name('ukm.events.store');
-    Route::get('/ukm/events/{event}/edit', [EventController::class, 'edit'])->name('ukm.events.edit');
-    Route::put('/ukm/events/{event}', [EventController::class, 'update'])->name('ukm.events.update');
-    Route::delete('/ukm/events/{event}', [EventController::class, 'destroy'])->name('ukm.events.destroy');
-    Route::get('/ukm/profile', [UKMController::class, 'index'])->name('ukms.profile');
-    Route::get('/ukm/profile/edit', [UKMController::class, 'edit'])->name('ukms.profile.edit');
-    Route::patch('/ukm/profile/update', [UKMController::class, 'update'])->name('ukms.profile.update');
-    // Route::put('/ukm/profile/update', [UKMController::class, 'update'])->name('ukms.profile.update');
+Route::middleware(['auth', 'isUKM'])->prefix('ukm')->name('ukm.')->group(function () {
+    Route::resource('events', EventController::class);
 });
 
 // Rute untuk Admin (Hanya untuk User dengan Role Admin)
