@@ -10,24 +10,54 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-        'ukm_id',
         'title',
         'description',
-        'event_date',
+        'image_url',
         'location',
+        'event_date',
+        'ukm_id',
     ];
 
-    // Relasi Many-to-Many ke User melalui EventRegistrations
+    /**
+     * Relasi Many-to-Many ke User melalui EventRegistrations
+     */
     public function users()
     {
         return $this->belongsToMany(User::class, 'event_registrations', 'event_id', 'user_id')
-                    ->withPivot('status')
-                    ->withTimestamps();
+                    ->withPivot('status') // Menyertakan kolom tambahan di tabel pivot
+                    ->withTimestamps();  // Menyertakan timestamp untuk pivot
     }
 
-    // Relasi ke UKM (Many-to-One)
+    /**
+     * Relasi Many-to-One ke UKM
+     */
     public function ukm()
     {
-        return $this->belongsTo(UKM::class);
+        return $this->belongsTo(UKM::class, 'ukm_id'); // Pastikan foreign key sesuai dengan nama kolom
+    }
+
+    /**
+     * Relasi One-to-Many ke EventRegistration
+     * Memungkinkan akses langsung ke registrasi tanpa melalui tabel pivot.
+     */
+    public function registrations()
+    {
+        return $this->hasMany(EventRegistration::class);
+    }
+
+    /**
+     * Scope untuk pencarian berdasarkan lokasi
+     */
+    public function scopeByLocation($query, $location)
+    {
+        return $query->where('location', $location);
+    }
+
+    /**
+     * Scope untuk pencarian berdasarkan tanggal
+     */
+    public function scopeByDate($query, $date)
+    {
+        return $query->where('event_date', $date);
     }
 }

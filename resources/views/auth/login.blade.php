@@ -98,6 +98,25 @@
             color: #2F55D4;
             cursor: pointer;
         }
+
+        .back-btn {
+            width: 100%;
+            height: 45px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            color: #2F55D4;
+            font-size: 18px;
+            font-weight: 500;
+            border: 1px solid #dcdcdc;
+            cursor: pointer;
+            text-align: center;
+            line-height: 45px;
+            margin-top: 10px;
+        }
+
+        .back-btn:hover {
+            background: #e5e5e5;
+        }
     </style>
 </head>
 <body>
@@ -124,6 +143,7 @@
         <div class="signup-prompt">
             Don't have an account yet? <a href="{{ route('register') }}"><span>Sign up NOW!</span></a>
         </div>
+        <a href="{{ route('home') }}" class="back-btn">Back to Home</a>
     </div>
 </body>
 </html>

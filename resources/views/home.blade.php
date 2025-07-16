@@ -40,41 +40,19 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="fw-medium">Popular Event</h2>
-                <a href="#" class="text-dark">View All (10)</a>
+                <a href="{{route('events')}}" class="text-dark">View All ({{ $popularEvents->count() }})</a>
             </div>
             <div class="row row-cols-lg-4 row-cols-md-3 row-cols-2 g-4">
-                <div class="col">
-                    <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/220" class="card-img-top" alt="Event">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Concert</h5>
+                @foreach ($popularEvents as $event)
+                    <div class="col">
+                        <div class="card card-event h-100">
+                            <img src="{{ asset('storage/' . $event->image_url) }}" class="card-img-top" alt="Event">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ $event->title }}</h5>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/220" class="card-img-top" alt="Event">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Competition</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/220" class="card-img-top" alt="Event">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Exhibition and Student-Fair</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/220" class="card-img-top" alt="Event">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Celebrant</h5>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -84,45 +62,21 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="fw-medium">Popular UKM</h2>
-                <a href="#" class="text-dark">View All (1000)</a>
+                <a href="" class="text-dark">View All ({{ $popularUKMs->count() }})</a>
             </div>
             <div class="row g-4">
-                <div class="col-md-3">
-                    <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/336" class="card-img-top" alt="UKM">
-                        <div class="card-body">
-                            <p class="explore-link text-end">Explore</p>
-                            <h5 class="card-title">Lorem Isum Resort<br><span class="fw-semibold">Maldives</span></h5>
+                @foreach ($popularUKMs as $ukm)
+                    <div class="col-md-3">
+                        <div class="card card-event h-100">
+                            <img src="{{ asset('storage/' . $ukm->logo) }}" class="card-img-top" alt="UKM Logo">
+                            <div class="card-body">
+                                <p class="explore-link text-end">Explore</p>
+                                <h5 class="card-title">{{ $ukm->name }}</h5>
+                                <p class="text-muted">{{ Str::limit($ukm->description, 50) }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/336" class="card-img-top" alt="UKM">
-                        <div class="card-body">
-                            <p class="explore-link text-end">Explore</p>
-                            <h5 class="card-title">Lorem Isum Resort<br><span class="fw-semibold">India</span></h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/336" class="card-img-top" alt="UKM">
-                        <div class="card-body">
-                            <p class="explore-link text-end">Explore</p>
-                            <h5 class="card-title">Lorem Isum Resort<br><span class="fw-semibold">Abu Dhabi</span></h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card card-event h-100">
-                        <img src="/api/placeholder/352/336" class="card-img-top" alt="UKM">
-                        <div class="card-body">
-                            <p class="explore-link text-end">Explore</p>
-                            <h5 class="card-title">Lorem Isum Resort<br><span class="fw-semibold">Dubai</span></h5>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>

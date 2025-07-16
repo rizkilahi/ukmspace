@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Event;
+use App\Models\UKM;
 
 class HomeController extends Controller
 {
@@ -11,20 +13,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Data yang ditampilkan di halaman utama
-        $events = \App\Models\Event::latest()->take(5)->get(); // Event terbaru
-        $ukms = \App\Models\UKM::where('verification_status', 'active')->take(5)->get(); // UKM aktif
-        // $categories = \App\Models\Category::all(); // Semua kategori
-        // $venues = \App\Models\Venue::all(); // Semua venue
-        // $testimonials = \App\Models\Testimonial::latest()->take(3)->get(); // Testimonial terbaru
+        $popularEvents = Event::latest()->take(4)->get(); // Ambil 4 event terbaru
+        $popularUKMs = UKM::where('verification_status', 'active')->take(4)->get(); // Ambil 4 UKM aktif
 
-        // Mengirim data ke view menggunakan array
-        return view('home', [
-            'events' => $events,
-            'ukms' => $ukms,
-            // 'categories' => $categories,
-            // 'venues' => $venues,
-            // 'testimonials' => $testimonials,
-        ]);
+        return view('home', compact('popularEvents', 'popularUKMs'));
     }
 }

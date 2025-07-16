@@ -57,16 +57,10 @@
             border-radius: 10px;
         }
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .checkbox-group input {
-            width: 18px;
-            height: 18px;
+        .form-group .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
         }
 
         .submit-btn {
@@ -101,6 +95,10 @@
         .login-prompt a:hover {
             text-decoration: underline;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -108,55 +106,103 @@
         <h1>Create an Account</h1>
         <form method="POST" action="{{ route('register.store') }}">
             @csrf
-            <!-- Name -->
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-                @error('name')
-                    <div style="color: red; font-size: 14px;">{{ $message }}</div>
-                @enderror
-            </div>
 
-            <!-- Email -->
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                @error('email')
-                    <div style="color: red; font-size: 14px;">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Phone -->
-            <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
-            </div>
-
-            <!-- Role -->
+            <!-- Role Selection -->
             <div class="form-group">
                 <label for="role">Register As</label>
-                <select id="role" name="role" required>
-                    <option value="user">User</option>
-                    <option value="ukm">UKM</option>
+                <select id="role" name="role" required onchange="toggleForm(this.value)">
+                    <option value="">Select Role</option>
+                    <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+                    <option value="ukm" {{ old('role') == 'ukm' ? 'selected' : '' }}>UKM</option>
                 </select>
+                @error('role')
+                    <div class="error-message">{{ $message }}</div>
+                @enderror
             </div>
 
-            <!-- Password -->
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <!-- User Form -->
+            <div id="user-form" class="hidden">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" value="{{ old('name') }}">
+                    @error('name')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" value="{{ old('email') }}">
+                    @error('email')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                    @error('phone')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
+                    @error('password')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="password_confirmation">Confirm Password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password">
+                    @error('password_confirmation')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
-            <!-- Confirm Password -->
-            <div class="form-group">
-                <label for="password_confirmation">Confirm Password</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
-            </div>
-
-            <!-- Terms & Conditions -->
-            <div class="checkbox-group">
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the terms and conditions</label>
+            <!-- UKM Form -->
+            <div id="ukm-form" class="hidden">
+                <div class="form-group">
+                    <label for="name">UKM Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter UKM name" value="{{ old('name') }}">
+                    @error('name')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter UKM email" value="{{ old('email') }}">
+                    @error('email')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                    @error('phone')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" placeholder="Enter UKM address">
+                    @error('address')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
+                    @error('password')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="password_confirmation">Confirm Password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password">
+                    @error('password_confirmation')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
             <button type="submit" class="submit-btn">Register</button>
@@ -166,5 +212,21 @@
             </div>
         </form>
     </div>
+
+    <script>
+        function toggleForm(role) {
+            document.getElementById('user-form').classList.add('hidden');
+            document.getElementById('ukm-form').classList.add('hidden');
+            if (role === 'user') {
+                document.getElementById('user-form').classList.remove('hidden');
+            } else if (role === 'ukm') {
+                document.getElementById('ukm-form').classList.remove('hidden');
+            }
+        }
+
+        // Pastikan form yang sesuai ditampilkan setelah reload jika validasi gagal
+        const selectedRole = "{{ old('role') }}";
+        if (selectedRole) toggleForm(selectedRole);
+    </script>
 </body>
 </html>

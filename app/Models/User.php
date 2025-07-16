@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -22,8 +20,8 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'role', // Tambahkan kolom role
-        // 'profile_photo', // Tambahkan kolom foto profil
+        'role', // Role user (e.g., user, ukm, admin)
+        'ukm_id', // Tambahkan kolom ukm_id untuk relasi belongsTo
     ];
 
     /**
@@ -50,11 +48,20 @@ class User extends Authenticatable
     }
 
     /**
+     * Relasi ke UKM untuk User yang memiliki satu UKM (Kolom ukm_id).
+     */
+    public function ukm()
+    {
+        return $this->belongsTo(UKM::class, 'ukm_id');
+    }
+
+    /**
      * Relasi Many-to-Many ke UKM melalui tabel pivot Members.
      */
     public function ukms()
     {
-        return $this->belongsToMany(UKM::class, 'members', 'user_id', 'ukm_id');
+        return $this->belongsToMany(UKM::class, 'members', 'user_id', 'ukm_id')
+                    ->withTimestamps();
     }
 
     /**

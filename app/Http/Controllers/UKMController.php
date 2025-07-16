@@ -4,76 +4,69 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\UKM;
+use Illuminate\Support\Facades\Auth;
 
 class UKMController extends Controller
 {
+
     /**
-     * Display a listing of the UKMs.
+     * Display the list of all UKMs.
+     */
+    public function indexEvent()
+    {
+        // Ambil semua data UKM dengan pagination
+        $ukms = UKM::paginate(10);
+
+        // Tampilkan view untuk semua UKM
+        return view('user.ukms', compact('ukms'));
+    }
+
+    /**
+     * Display the profile of the authenticated UKM.
      */
     public function index()
     {
-        $ukms = UKM::latest()->paginate(10);
-        return view('ukms.index', compact('ukms'));
-    }
+        $ukm = Auth::user()->ukm; // Gunakan Auth::user() untuk mengambil UKM
 
-    /**
-     * Show the form for creating a new UKM.
-     */
-    public function create()
-    {
-        return view('ukms.create');
-    }
-
-    /**
-     * Store a newly created UKM in storage.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'email' => 'required|email|unique:ukms',
-            'password' => 'required|string|min:8',
-            'logo' => 'nullable|image',
-        ]);
-
-        $validated['password'] = bcrypt($validated['password']);
-        $validated['verification_status'] = 'inactive';
-
-        if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('logos', 'public');
+        if (!$ukm) {
+            return redirect()->route('dashboard')->with('error', 'You do not have a UKM profile.');
         }
 
-        UKM::create($validated);
-
-        return redirect()->route('ukms.index')->with('success', 'UKM created successfully.');
+        return view('ukms.profile', compact('ukm'));
     }
 
     /**
-     * Display the specified UKM.
+     * Show the form for editing the authenticated UKM profile.
      */
-    public function show(UKM $ukm)
+    public function edit()
     {
-        return view('ukms.show', compact('ukm'));
-    }
+        $ukm = Auth::user()->ukm; // Gunakan Auth::user()
 
-    /**
-     * Show the form for editing the specified UKM.
-     */
-    public function edit(UKM $ukm)
-    {
+        if (!$ukm) {
+            return redirect()->route('dashboard')->with('error', 'You do not have a UKM profile.');
+        }
+
         return view('ukms.edit', compact('ukm'));
     }
 
     /**
-     * Update the specified UKM in storage.
+     * Update the authenticated UKM profile.
      */
-    public function update(Request $request, UKM $ukm)
+    public function update(Request $request)
     {
+        $ukm = Auth::user()->ukm; // Gunakan Auth::user()
+
+        if (!$ukm) {
+            return redirect()->route('dashboard')->with('error', 'You do not have a UKM profile.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'logo' => 'nullable|image',
+            'logo' => 'nullable|image|max:2048',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:15',
+            'website' => 'nullable|url|max:255',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -82,16 +75,18 @@ class UKMController extends Controller
 
         $ukm->update($validated);
 
-        return redirect()->route('ukms.index')->with('success', 'UKM updated successfully.');
+        return redirect()->route('ukms.profile')->with('success', 'UKM profile updated successfully.');
     }
 
-    /**
-     * Remove the specified UKM from storage.
-     */
-    public function destroy(UKM $ukm)
+    public function show($id)
     {
-        $ukm->delete();
+        // Temukan UKM berdasarkan ID
+        $ukm = UKM::with('events')->findOrFail($id);
 
-        return redirect()->route('ukms.index')->with('success', 'UKM deleted successfully.');
+        // Ambil semua event dari UKM
+        $events = $ukm->events()->paginate(10);
+
+        // Kirim data ke view
+        return view('user.ukmevents', compact('ukm', 'events'));
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -40,21 +41,29 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
+        // Validasi password
+        $request->validate([
+            'password' => ['required'],
         ]);
 
+        if (!Hash::check($request->password, $request->user()->password)) {
+            return back()->withErrors([
+                'userDeletion.password' => __('The provided password is incorrect.'),
+            ]);
+        }
+
+        // Hapus pengguna
         $user = $request->user();
 
+        // Log out user
         Auth::logout();
 
+        // Hapus akun pengguna
         $user->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        // Redirect ke halaman awal
+        return redirect('/')->with('success', __('Your account has been deleted.'));
     }
 }

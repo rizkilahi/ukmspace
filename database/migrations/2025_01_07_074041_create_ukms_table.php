@@ -15,7 +15,7 @@ class CreateUkmsTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('logo')->nullable();
-            $table->enum('verification_status', ['active', 'inactive'])->default('inactive');
+            $table->enum('verification_status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
     }

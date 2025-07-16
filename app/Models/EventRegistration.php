@@ -26,4 +26,9 @@ class EventRegistration extends Model
     {
         return $this->belongsTo(Event::class);
     }
+
+    public function registrations()
+    {
+        return $this->hasMany(EventRegistration::class, 'event_id');
+    }
 }
