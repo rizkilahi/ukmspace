@@ -16,6 +16,10 @@ class HomeController extends Controller
         $popularEvents = Event::latest()->take(4)->get(); // Ambil 4 event terbaru
         $popularUKMs = UKM::where('verification_status', 'active')->take(4)->get(); // Ambil 4 UKM aktif
 
-        return view('home', compact('popularEvents', 'popularUKMs'));
+        // Also pass variables with the names expected by the view
+        $events = $popularEvents;
+        $ukms = $popularUKMs;
+
+        return view('home', compact('popularEvents', 'popularUKMs', 'events', 'ukms'));
     }
 }

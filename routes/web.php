@@ -38,6 +38,13 @@ Route::middleware(['auth', 'isUKM'])->prefix('ukm')->name('ukm.')->group(functio
     Route::resource('events', EventController::class);
 });
 
+// Rute UKM Profile (accessible by UKM role)
+Route::middleware(['auth', 'isUKM'])->group(function () {
+    Route::get('/ukms/profile', [UKMController::class, 'index'])->name('ukms.profile');
+    Route::get('/ukms/profile/edit', [UKMController::class, 'edit'])->name('ukms.profile.edit');
+    Route::put('/ukms/profile', [UKMController::class, 'update'])->name('ukms.profile.update');
+});
+
 // Rute untuk Admin (Hanya untuk User dengan Role Admin)
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('ukms', UKMController::class);

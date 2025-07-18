@@ -19,15 +19,15 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <select name="category" class="form-select search-input">
-                            @foreach($ukms as $u)
-                            <option value="">{{$u["name"]}}</option>
+                            @foreach ($ukms as $u)
+                                <option value="">{{ $u->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-4">
                         <select name="event" class="form-select search-input">
-                            @foreach($events as $e)
-                            <option value="">{{$e["title"]}}</option>
+                            @foreach ($events as $e)
+                                <option value="">{{ $e->title }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -44,7 +44,7 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="fw-medium">Popular Event</h2>
-                <a href="{{route('events')}}" class="text-dark">View All ({{ $popularEvents->count() }})</a>
+                <a href="{{ route('events') }}" class="text-dark">View All ({{ $popularEvents->count() }})</a>
             </div>
             <div class="row row-cols-lg-4 row-cols-md-3 row-cols-2 g-4">
                 @foreach ($popularEvents as $event)

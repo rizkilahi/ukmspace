@@ -94,7 +94,7 @@ class EventController extends Controller
 
         Event::create($validated);
 
-        return redirect()->route('ukm.events.manage')->with('success', 'Event created successfully.');
+        return redirect()->route('ukm.events.index')->with('success', 'Event created successfully.');
     }
 
     /**
@@ -112,7 +112,7 @@ class EventController extends Controller
     {
         // Pastikan event tersebut milik UKM yang sedang login
         if ($event->ukm_id !== Auth::user()->ukm_id) {
-            return redirect()->route('ukm.events.manage')->with('error', 'You are not authorized to edit this event.');
+            return redirect()->route('ukm.events.index')->with('error', 'You are not authorized to edit this event.');
         }
 
         return view('ukms.events.edit', compact('event'));
@@ -146,7 +146,7 @@ class EventController extends Controller
         // Update event
         $event->update($validated);
 
-        return redirect()->route('ukm.events.manage')->with('success', 'Event updated successfully.');
+        return redirect()->route('ukm.events.index')->with('success', 'Event updated successfully.');
     }
 
     /**
@@ -160,6 +160,6 @@ class EventController extends Controller
 
         $event->delete();
 
-        return redirect()->route('ukm.events.manage')->with('success', 'Event deleted successfully.');
+        return redirect()->route('ukm.events.index')->with('success', 'Event deleted successfully.');
     }
 }
