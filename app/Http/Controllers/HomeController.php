@@ -13,13 +13,16 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $popularEvents = Event::latest()->take(4)->get(); // Ambil 4 event terbaru
-        $popularUKMs = UKM::where('verification_status', 'active')->take(4)->get(); // Ambil 4 UKM aktif
+        // Eager load UKM relationship to prevent N+1 queries
+        $events = Event::with('ukm:id,name,logo')
+            ->latest()
+            ->take(4)
+            ->get();
 
-        // Also pass variables with the names expected by the view
-        $events = $popularEvents;
-        $ukms = $popularUKMs;
+        $ukms = UKM::where('verification_status', 'active')
+            ->take(4)
+            ->get();
 
-        return view('home', compact('popularEvents', 'popularUKMs', 'events', 'ukms'));
+        return view('home', compact('events', 'ukms'));
     }
 }

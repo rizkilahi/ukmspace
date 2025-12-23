@@ -14,24 +14,20 @@ class EventController extends Controller
      * Menampilkan daftar event berdasarkan role (user atau UKM).
      */
     public function index()
-{
-    $events = Event::latest()->paginate(10);
+    {
+        // Eager load UKM to prevent N+1 queries
+        $events = Event::with('ukm:id,name,logo')
+            ->latest()
+            ->paginate(10);
 
-    // Periksa apakah pengguna login atau tidak
-    if (Auth::check()) {
-        $user = Auth::user();
-        $role = $user->role;
-
-        if ($role === 'user') {
-            return view('user.events.index', compact('events'));
-        } elseif ($role === 'ukm') {
-            return view('ukms.events.index', compact('events'));
+        // Determine view based on user role
+        $view = 'user.events.index';
+        if (Auth::check() && Auth::user()->role === 'ukm') {
+            $view = 'ukms.events.index';
         }
-    }
 
-    // Jika pengguna tidak login, arahkan ke view publik untuk semua event
-    return view('user.events.index', compact('events'));
-}
+        return view($view, compact('events'));
+    }
 
 
     /**
@@ -41,16 +37,18 @@ class EventController extends Controller
     {
         $user = $request->user();
 
-        // Cek jika user sudah mendaftar
-        if ($event->registrations()->where('user_id', $user->id)->exists()) {
+        // Use firstOrCreate to check and create in one query
+        $registration = EventRegistration::firstOrCreate(
+            [
+                'event_id' => $event->id,
+                'user_id' => $user->id,
+            ],
+            ['status' => 'pending']
+        );
+
+        if (!$registration->wasRecentlyCreated) {
             return back()->with('error', 'You have already registered for this event.');
         }
-
-        // Daftarkan user ke event
-        EventRegistration::create([
-            'event_id' => $event->id,
-            'user_id' => $user->id,
-        ]);
 
         return back()->with('success', 'Successfully registered for the event.');
     }
@@ -60,7 +58,11 @@ class EventController extends Controller
      */
     public function manage()
     {
-        $events = Event::where('ukm_id', Auth::user()->ukm_id)->latest()->paginate(10);
+        // Eager load registrations count for better performance
+        $events = Event::where('ukm_id', Auth::user()->ukm_id)
+            ->withCount('registrations')
+            ->latest()
+            ->paginate(10);
 
         return view('ukms.events.manage', compact('events'));
     }
@@ -102,6 +104,9 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
+        // Eager load relationships to prevent N+1 queries
+        $event->load('ukm:id,name,logo,email,phone');
+
         return view('show', compact('event'));
     }
 

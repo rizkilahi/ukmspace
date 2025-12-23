@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\UKM;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UKMController extends Controller
 {
@@ -14,10 +15,11 @@ class UKMController extends Controller
      */
     public function indexEvent()
     {
-        // Ambil semua data UKM dengan pagination
-        $ukms = UKM::paginate(10);
+        // Select only needed columns for better performance
+        $ukms = UKM::select('id', 'name', 'description', 'logo', 'verification_status')
+            ->where('verification_status', 'active')
+            ->paginate(10);
 
-        // Tampilkan view untuk semua UKM
         return view('user.ukms', compact('ukms'));
     }
 
@@ -26,11 +28,9 @@ class UKMController extends Controller
      */
     public function index()
     {
-        $ukm = Auth::user()->ukm; // Gunakan Auth::user() untuk mengambil UKM
+        $ukm = Auth::user()->ukm;
 
-        if (!$ukm) {
-            return redirect()->route('dashboard')->with('error', 'You do not have a UKM profile.');
-        }
+        abort_if(!$ukm, 404, 'You do not have a UKM profile.');
 
         return view('ukms.profile', compact('ukm'));
     }
@@ -40,11 +40,9 @@ class UKMController extends Controller
      */
     public function edit()
     {
-        $ukm = Auth::user()->ukm; // Gunakan Auth::user()
+        $ukm = Auth::user()->ukm;
 
-        if (!$ukm) {
-            return redirect()->route('dashboard')->with('error', 'You do not have a UKM profile.');
-        }
+        abort_if(!$ukm, 404, 'You do not have a UKM profile.');
 
         return view('ukms.edit', compact('ukm'));
     }
@@ -54,11 +52,9 @@ class UKMController extends Controller
      */
     public function update(Request $request)
     {
-        $ukm = Auth::user()->ukm; // Gunakan Auth::user()
+        $ukm = Auth::user()->ukm;
 
-        if (!$ukm) {
-            return redirect()->route('dashboard')->with('error', 'You do not have a UKM profile.');
-        }
+        abort_if(!$ukm, 404, 'You do not have a UKM profile.');
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -70,6 +66,10 @@ class UKMController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
+            // Delete old logo to save storage space
+            if ($ukm->logo) {
+                Storage::disk('public')->delete($ukm->logo);
+            }
             $validated['logo'] = $request->file('logo')->store('logos', 'public');
         }
 
@@ -80,13 +80,16 @@ class UKMController extends Controller
 
     public function show($id)
     {
-        // Temukan UKM berdasarkan ID
-        $ukm = UKM::with('events')->findOrFail($id);
+        // Find UKM or fail with 404
+        $ukm = UKM::select('id', 'name', 'description', 'logo', 'email', 'phone', 'website', 'address')
+            ->findOrFail($id);
 
-        // Ambil semua event dari UKM
-        $events = $ukm->events()->paginate(10);
+        // Paginate events separately for better performance
+        $events = Event::where('ukm_id', $id)
+            ->select('id', 'title', 'description', 'event_date', 'location', 'image_url', 'ukm_id')
+            ->latest()
+            ->paginate(10);
 
-        // Kirim data ke view
         return view('user.ukmevents', compact('ukm', 'events'));
     }
 }

@@ -20,8 +20,16 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'role', // Role user (e.g., user, ukm, admin)
-        'ukm_id', // Tambahkan kolom ukm_id untuk relasi belongsTo
+        'ukm_id',
+    ];
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [
+        'role', // Prevent mass assignment of role for security
     ];
 
     /**

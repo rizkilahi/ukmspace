@@ -4,7 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UKMController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\UKMController as AdminUKMController;
 use Illuminate\Support\Facades\Route;
 
 // Rute Halaman Utama (Public)
@@ -29,8 +30,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'isUser'])->group(function () {
-    Route::post('/events/{event}', [EventController::class, 'register'])->name('events.register');
-
+    Route::post('/events/{event}', [EventController::class, 'register'])
+        ->name('events.register')
+        ->middleware('throttle:10,1'); // Rate limit: 10 registrations per minute
 });
 
 // Rute untuk UKM (Hanya untuk User dengan Role UKM)
@@ -47,8 +49,8 @@ Route::middleware(['auth', 'isUKM'])->group(function () {
 
 // Rute untuk Admin (Hanya untuk User dengan Role Admin)
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('ukms', UKMController::class);
-    Route::resource('users', UserController::class);
+    Route::resource('ukms', AdminUKMController::class);
+    Route::resource('users', AdminUserController::class);
 });
 
 // Tambahkan rute otentikasi bawaan Breeze

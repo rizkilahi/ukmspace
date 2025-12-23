@@ -15,13 +15,21 @@ class UKM extends Model
         'name',
         'description',
         'email',
-        'password',
         'logo',
-        'verification_status',
         'address',
         'phone',
         'website',
         'established_date',
+    ];
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [
+        'password', // Password should be set explicitly
+        'verification_status', // Only admins can change this
     ];
 
     /**

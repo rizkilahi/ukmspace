@@ -30,6 +30,15 @@ class Event extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     */
+    protected $casts = [
+        'event_date' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
      * Relasi Many-to-Many ke User melalui EventRegistrations
      */
     public function users()
@@ -70,5 +79,29 @@ class Event extends Model
     public function scopeByDate($query, $date)
     {
         return $query->where('event_date', $date);
+    }
+
+    /**
+     * Scope untuk event yang akan datang
+     */
+    public function scopeUpcoming($query)
+    {
+        return $query->where('event_date', '>=', now())->orderBy('event_date');
+    }
+
+    /**
+     * Scope untuk event yang sudah lewat
+     */
+    public function scopePast($query)
+    {
+        return $query->where('event_date', '<', now())->orderByDesc('event_date');
+    }
+
+    /**
+     * Scope dengan eager loading standar
+     */
+    public function scopeWithStandardRelations($query)
+    {
+        return $query->with('ukm:id,name,logo');
     }
 }

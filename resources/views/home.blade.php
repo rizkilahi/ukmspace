@@ -44,10 +44,10 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="fw-medium">Popular Event</h2>
-                <a href="{{ route('events') }}" class="text-dark">View All ({{ $popularEvents->count() }})</a>
+                <a href="{{ route('events') }}" class="text-dark">View All ({{ $events->count() }})</a>
             </div>
             <div class="row row-cols-lg-4 row-cols-md-3 row-cols-2 g-4">
-                @foreach ($popularEvents as $event)
+                @foreach ($events as $event)
                     <div class="col">
                         <div class="card card-event h-100">
                             <img src="{{ asset('storage/' . $event->image_url) }}" class="card-img-top" alt="Event">
@@ -66,10 +66,10 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="fw-medium">Popular UKM</h2>
-                <a href="" class="text-dark">View All ({{ $popularUKMs->count() }})</a>
+                <a href="" class="text-dark">View All ({{ $ukms->count() }})</a>
             </div>
             <div class="row g-4">
-                @foreach ($popularUKMs as $ukm)
+                @foreach ($ukms as $ukm)
                     <div class="col-md-3">
                         <div class="card card-event h-100">
                             <img src="{{ asset('storage/' . $ukm->logo) }}" class="card-img-top" alt="UKM Logo">
