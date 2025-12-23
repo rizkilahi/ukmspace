@@ -6,7 +6,7 @@
 <div class="container mt-5">
     <h1 class="mb-4">Edit UKM Profile</h1>
 
-    <form method="POST" action="{{ route('ukms.profile.update') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('ukm.profile.update') }}" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
 

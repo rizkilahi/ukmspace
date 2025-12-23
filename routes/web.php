@@ -56,7 +56,11 @@ Route::middleware(['auth', 'isUKM'])->prefix('ukm')->name('ukm.')->group(functio
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/events/{event}', [ReportController::class, 'eventReport'])->name('reports.event');
     Route::get('reports/compare', [ReportController::class, 'compare'])->name('reports.compare');
-    Route::put('/ukms/profile', [UKMController::class, 'update'])->name('ukms.profile.update');
+    
+    // UKM Profile routes
+    Route::get('profile', [UKMController::class, 'index'])->name('profile');
+    Route::get('profile/edit', [UKMController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [UKMController::class, 'update'])->name('profile.update');
 });
 
 // Rute untuk Admin (Hanya untuk User dengan Role Admin)

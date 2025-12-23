@@ -24,7 +24,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                             <!-- Role-based Menu -->
                             @if (auth()->user()->role === 'ukm')
-                                <li><a class="dropdown-item" href="{{ route('ukms.profile') }}">
+                                <li><a class="dropdown-item" href="{{ route('ukm.profile') }}">
                                         <i class="bi bi-building"></i> UKM Profile
                                     </a></li>
                                 <li><a class="dropdown-item" href="{{ route('ukm.analytics') }}">

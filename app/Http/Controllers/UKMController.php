@@ -76,7 +76,7 @@ class UKMController extends Controller
 
         $ukm->update($validated);
 
-        return redirect()->route('ukms.profile')->with('success', 'UKM profile updated successfully.');
+        return redirect()->route('ukm.profile')->with('success', 'UKM profile updated successfully.');
     }
 
     public function show($id)

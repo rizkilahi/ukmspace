@@ -68,7 +68,7 @@
                 @endif
             </div>
             <div>
-                <a href="{{ route('ukms.profile.edit') }}" class="btn btn-primary">Edit Profile</a>
+                <a href="{{ route('ukm.profile.edit') }}" class="btn btn-primary">Edit Profile</a>
             </div>
         </div>
     </div>
