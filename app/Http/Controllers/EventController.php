@@ -13,12 +13,55 @@ class EventController extends Controller
     /**
      * Menampilkan daftar event berdasarkan role (user atau UKM).
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Eager load UKM to prevent N+1 queries
-        $events = Event::with('ukm:id,name,logo')
-            ->latest()
-            ->paginate(10);
+        // Build query with filters
+        $query = Event::with('ukm:id,name,logo');
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        // UKM filter
+        if ($request->filled('ukm_id')) {
+            $query->where('ukm_id', $request->input('ukm_id'));
+        }
+
+        // Date filter
+        if ($request->filled('date_from')) {
+            $query->where('event_date', '>=', $request->input('date_from'));
+        }
+        if ($request->filled('date_to')) {
+            $query->where('event_date', '<=', $request->input('date_to'));
+        }
+
+        // Sort
+        $sort = $request->input('sort', 'latest');
+        switch ($sort) {
+            case 'oldest':
+                $query->oldest();
+                break;
+            case 'date_asc':
+                $query->orderBy('event_date', 'asc');
+                break;
+            case 'date_desc':
+                $query->orderBy('event_date', 'desc');
+                break;
+            default:
+                $query->latest();
+        }
+
+        $events = $query->paginate(12)->withQueryString();
+        $ukms = \App\Models\UKM::where('verification_status', 'active')
+                    ->select('id', 'name')
+                    ->orderBy('name')
+                    ->get();
 
         // Determine view based on user role
         $view = 'user.events.index';
@@ -26,7 +69,7 @@ class EventController extends Controller
             $view = 'ukms.events.index';
         }
 
-        return view($view, compact('events'));
+        return view($view, compact('events', 'ukms'));
     }
 
 
@@ -166,5 +209,288 @@ class EventController extends Controller
         $event->delete();
 
         return redirect()->route('ukm.events.index')->with('success', 'Event deleted successfully.');
+    }
+
+    /**
+     * View registrations for an event (UKM role).
+     */
+    public function registrations(Event $event)
+    {
+        // Ensure the event belongs to the logged-in UKM
+        abort_if($event->ukm_id !== Auth::user()->ukm_id, 403, 'Unauthorized access.');
+
+        // Get registrations with user details
+        $registrations = $event->registrations()
+            ->with('user:id,name,email,phone')
+            ->latest()
+            ->paginate(15);
+
+        return view('ukms.events.registrations', compact('event', 'registrations'));
+    }
+
+    /**
+     * Update registration status (approve/reject).
+     */
+    public function updateRegistrationStatus(Request $request, EventRegistration $registration)
+    {
+        // Ensure the event belongs to the logged-in UKM
+        $event = $registration->event;
+        abort_if($event->ukm_id !== Auth::user()->ukm_id, 403, 'Unauthorized access.');
+
+        $validated = $request->validate([
+            'status' => 'required|in:accepted,rejected,pending'
+        ]);
+
+        // Store old status before update
+        $oldStatus = $registration->status;
+
+        $registration->update($validated);
+
+        // Send email notification if status changed
+        if ($oldStatus !== $validated['status']) {
+            $registration->user->notify(new \App\Notifications\RegistrationStatusChanged(
+                $registration,
+                $oldStatus,
+                $validated['status']
+            ));
+        }
+
+        $statusText = ucfirst($validated['status']);
+        return back()->with('success', "Registration {$statusText} successfully. Email notification sent to user.");
+    }
+
+    /**
+     * Export event registrations to CSV
+     */
+    public function exportRegistrations(Event $event)
+    {
+        // Ensure the event belongs to the logged-in UKM
+        abort_if($event->ukm_id !== Auth::user()->ukm_id, 403, 'Unauthorized access.');
+
+        $registrations = $event->registrations()
+            ->with('user:id,name,email,phone')
+            ->get();
+
+        $filename = 'registrations_' . \Str::slug($event->title) . '_' . date('Y-m-d') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($registrations) {
+            $file = fopen('php://output', 'w');
+
+            // Add BOM for UTF-8
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Header row
+            fputcsv($file, ['No', 'Name', 'Email', 'Phone', 'Status', 'Registration Date']);
+
+            // Data rows
+            foreach ($registrations as $index => $registration) {
+                fputcsv($file, [
+                    $index + 1,
+                    $registration->user->name,
+                    $registration->user->email,
+                    $registration->user->phone ?? '-',
+                    ucfirst($registration->status),
+                    $registration->created_at->format('Y-m-d H:i:s'),
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Display analytics dashboard for UKM
+     */
+    public function analytics()
+    {
+        $ukmId = Auth::user()->ukm_id;
+
+        // Total events
+        $totalEvents = Event::where('ukm_id', $ukmId)->count();
+
+        // Events by status
+        $upcomingEvents = Event::where('ukm_id', $ukmId)
+            ->where('event_date', '>', now())
+            ->count();
+        $ongoingEvents = Event::where('ukm_id', $ukmId)
+            ->whereDate('event_date', today())
+            ->count();
+        $completedEvents = Event::where('ukm_id', $ukmId)
+            ->where('event_date', '<', today())
+            ->count();
+
+        // Total registrations
+        $totalRegistrations = EventRegistration::whereHas('event', function($query) use ($ukmId) {
+            $query->where('ukm_id', $ukmId);
+        })->count();
+
+        // Registrations by status
+        $registrationStats = EventRegistration::whereHas('event', function($query) use ($ukmId) {
+            $query->where('ukm_id', $ukmId);
+        })
+        ->selectRaw('status, COUNT(*) as count')
+        ->groupBy('status')
+        ->pluck('count', 'status')
+        ->toArray();
+
+        $pendingCount = $registrationStats['pending'] ?? 0;
+        $acceptedCount = $registrationStats['accepted'] ?? 0;
+        $rejectedCount = $registrationStats['rejected'] ?? 0;
+
+        // Monthly registration trend (last 6 months)
+        $monthlyData = EventRegistration::whereHas('event', function($query) use ($ukmId) {
+            $query->where('ukm_id', $ukmId);
+        })
+        ->where('created_at', '>=', now()->subMonths(6))
+        ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get();
+
+        // Top events by registrations
+        $topEvents = Event::where('ukm_id', $ukmId)
+            ->withCount('registrations')
+            ->orderBy('registrations_count', 'desc')
+            ->take(5)
+            ->get();
+
+        // Recent registrations
+        $recentRegistrations = EventRegistration::whereHas('event', function($query) use ($ukmId) {
+            $query->where('ukm_id', $ukmId);
+        })
+        ->with(['user:id,name,email', 'event:id,title'])
+        ->latest()
+        ->take(10)
+        ->get();
+
+        // Approval rate
+        $approvalRate = $totalRegistrations > 0
+            ? round(($acceptedCount / $totalRegistrations) * 100, 1)
+            : 0;
+
+        return view('ukms.analytics', compact(
+            'totalEvents',
+            'upcomingEvents',
+            'ongoingEvents',
+            'completedEvents',
+            'totalRegistrations',
+            'pendingCount',
+            'acceptedCount',
+            'rejectedCount',
+            'monthlyData',
+            'topEvents',
+            'recentRegistrations',
+            'approvalRate'
+        ));
+    }
+
+    /**
+     * Show QR code for event check-in
+     */
+    public function showQRCode(Event $event)
+    {
+        // Only UKM coordinators can view
+        abort_if($event->ukm_id !== Auth::user()->ukm_id, 403, 'Unauthorized access.');
+
+        // Get accepted registrations for this event
+        $registrations = $event->registrations()
+            ->with('user')
+            ->where('status', 'accepted')
+            ->orderBy('checked_in_at', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Calculate attendance stats
+        $totalRegistrations = $registrations->count();
+        $checkedInCount = $registrations->whereNotNull('checked_in_at')->count();
+        $attendanceRate = $totalRegistrations > 0 ? round(($checkedInCount / $totalRegistrations) * 100, 1) : 0;
+
+        // Generate secure check-in token
+        $checkInToken = hash('sha256', config('app.key') . $event->id);
+        $checkInUrl = route('events.check-in', ['event' => $event->id, 'token' => $checkInToken]);
+
+        return view('ukms.events.qr-code', compact('event', 'registrations', 'totalRegistrations', 'checkedInCount', 'attendanceRate', 'checkInUrl'));
+    }
+
+    /**
+     * Handle QR code check-in
+     */
+    public function checkIn($eventId, $token)
+    {
+        // Verify token matches event
+        $expectedToken = hash('sha256', config('app.key') . $eventId);
+        if ($token !== $expectedToken) {
+            abort(403, 'Invalid QR code');
+        }
+
+        $event = Event::findOrFail($eventId);
+
+        // Check if user is logged in
+        if (!Auth::check()) {
+            return redirect()->route('login')
+                ->with('info', 'Please log in to check in to this event.');
+        }
+
+        // Check if user is registered
+        $registration = EventRegistration::where('event_id', $eventId)
+            ->where('user_id', Auth::id())
+            ->where('status', 'accepted')
+            ->first();
+
+        if (!$registration) {
+            return redirect()->route('events.show', $event)
+                ->with('error', 'You are not registered for this event or your registration is not accepted.');
+        }
+
+        // Mark as checked in if not already
+        if (!$registration->checked_in_at) {
+            $registration->update([
+                'checked_in_at' => now(),
+                'check_in_method' => 'qr'
+            ]);
+
+            return redirect()->route('events.show', $event)
+                ->with('success', 'Successfully checked in! Welcome to ' . $event->title);
+        }
+
+        return redirect()->route('events.show', $event)
+            ->with('info', 'You have already checked in at ' . $registration->checked_in_at->format('g:i A, M j'));
+    }
+
+    /**
+     * Manual check-in toggle
+     */
+    public function manualCheckIn(Event $event, EventRegistration $registration)
+    {
+        // Only UKM coordinators can manually check in
+        abort_if($event->ukm_id !== Auth::user()->ukm_id, 403, 'Unauthorized access.');
+
+        if ($registration->event_id !== $event->id) {
+            abort(403, 'Invalid registration');
+        }
+
+        // Toggle check-in status
+        if ($registration->checked_in_at) {
+            $registration->update([
+                'checked_in_at' => null,
+                'check_in_method' => null
+            ]);
+            $message = 'Check-in removed for ' . $registration->user->name;
+        } else {
+            $registration->update([
+                'checked_in_at' => now(),
+                'check_in_method' => 'manual'
+            ]);
+            $message = $registration->user->name . ' marked as checked in';
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 }

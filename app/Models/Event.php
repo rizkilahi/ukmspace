@@ -104,4 +104,57 @@ class Event extends Model
     {
         return $query->with('ukm:id,name,logo');
     }
+
+    /**
+     * Get event status (upcoming, ongoing, completed)
+     */
+    public function getStatusAttribute()
+    {
+        $eventDate = \Carbon\Carbon::parse($this->event_date);
+        $today = \Carbon\Carbon::today();
+
+        if ($eventDate->isToday()) {
+            return 'ongoing';
+        } elseif ($eventDate->isFuture()) {
+            return 'upcoming';
+        } else {
+            return 'completed';
+        }
+    }
+
+    /**
+     * Get status badge class
+     */
+    public function getStatusBadgeClassAttribute()
+    {
+        return match($this->status) {
+            'upcoming' => 'bg-primary',
+            'ongoing' => 'bg-success',
+            'completed' => 'bg-secondary',
+            default => 'bg-secondary'
+        };
+    }
+
+    /**
+     * Get days until event
+     */
+    public function getDaysUntilAttribute()
+    {
+        $eventDate = \Carbon\Carbon::parse($this->event_date);
+        $today = \Carbon\Carbon::today();
+
+        if ($eventDate->isPast()) {
+            return 0;
+        }
+
+        return $today->diffInDays($eventDate);
+    }
+
+    /**
+     * Check if event is happening today
+     */
+    public function isTodayAttribute()
+    {
+        return \Carbon\Carbon::parse($this->event_date)->isToday();
+    }
 }

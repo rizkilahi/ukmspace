@@ -21,6 +21,12 @@ class EventRegistration extends Model
         'user_id',
         'event_id',
         'status',
+        'checked_in_at',
+        'check_in_method',
+    ];
+
+    protected $casts = [
+        'checked_in_at' => 'datetime',
     ];
 
     // Relasi ke User

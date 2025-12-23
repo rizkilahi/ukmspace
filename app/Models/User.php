@@ -21,6 +21,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'ukm_id',
+        'avatar',
     ];
 
     /**

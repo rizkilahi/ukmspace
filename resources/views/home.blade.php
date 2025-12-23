@@ -15,21 +15,19 @@
     <section class="hero">
         <div class="container text-center">
             <h1 class="display-4 fw-medium mb-5">UKM Space</h1>
-            <form class="search-form">
+            <form action="{{ route('search') }}" method="GET" class="search-form">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <select name="category" class="form-select search-input">
+                        <select name="ukm" class="form-select search-input">
+                            <option value="">All UKMs</option>
                             @foreach ($ukms as $u)
-                                <option value="">{{ $u->name }}</option>
+                                <option value="{{ $u->id }}">{{ $u->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <select name="event" class="form-select search-input">
-                            @foreach ($events as $e)
-                                <option value="">{{ $e->title }}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" name="query" class="form-control search-input"
+                            placeholder="Search events...">
                     </div>
                     <div class="col-md-4">
                         <button type="submit" class="btn search-button text-white fw-semibold w-100">Search</button>
